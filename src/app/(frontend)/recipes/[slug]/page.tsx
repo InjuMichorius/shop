@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
+import { RelatedRecipes } from '@/blocks/RelatedRecipes/Component'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
@@ -8,17 +8,17 @@ import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import RichText from '@/components/RichText'
 
-import type { Post } from '@/payload-types'
+import type { Recipe } from '@/payload-types'
 
-import { PostHero } from '@/heros/PostHero'
+import { RecipeHero } from '@/heros/RecipeHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
-  const posts = await payload.find({
-    collection: 'posts',
+  const recipes = await payload.find({
+    collection: 'recipes',
     draft: false,
     limit: 1000,
     overrideAccess: false,
@@ -28,7 +28,7 @@ export async function generateStaticParams() {
     },
   })
 
-  const params = posts.docs.map(({ slug }) => {
+  const params = recipes.docs.map(({ slug }) => {
     return { slug }
   })
 
@@ -41,13 +41,17 @@ type Args = {
   }>
 }
 
-export default async function Post({ params: paramsPromise }: Args) {
+export default async function Recipe({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
   const { slug = '' } = await paramsPromise
-  const url = '/posts/' + slug
-  const post = await queryPostBySlug({ slug })
+  const url = '/recipes/' + slug
+  const recipe = await queryRecipeBySlug({ slug })
 
-  if (!post) return <PayloadRedirects url={url} />
+  function isRecipe(doc: unknown): doc is Recipe {
+    return typeof doc === 'object' && doc !== null && 'title' in doc
+  }
+
+  if (!recipe) return <PayloadRedirects url={url} />
 
   return (
     <article className="pt-16 pb-16">
@@ -58,15 +62,15 @@ export default async function Post({ params: paramsPromise }: Args) {
 
       {draft && <LivePreviewListener />}
 
-      <PostHero post={post} />
+      <RecipeHero recipe={recipe} />
 
       <div className="flex flex-col items-center gap-4 pt-8">
         <div className="container">
-          <RichText className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
-          {post.relatedPosts && post.relatedPosts.length > 0 && (
-            <RelatedPosts
+          <RichText className="max-w-[48rem] mx-auto" data={recipe.content} enableGutter={false} />
+          {recipe.relatedRecipes && recipe.relatedRecipes.length > 0 && (
+            <RelatedRecipes
               className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
-              docs={post.relatedPosts.filter((post) => typeof post === 'object')}
+              docs={recipe.relatedRecipes.filter(isRecipe)}
             />
           )}
         </div>
@@ -77,18 +81,18 @@ export default async function Post({ params: paramsPromise }: Args) {
 
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { slug = '' } = await paramsPromise
-  const post = await queryPostBySlug({ slug })
+  const recipe = await queryRecipeBySlug({ slug })
 
-  return generateMeta({ doc: post })
+  return generateMeta({ doc: recipe })
 }
 
-const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
+const queryRecipeBySlug = cache(async ({ slug }: { slug: string }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
 
   const result = await payload.find({
-    collection: 'posts',
+    collection: 'recipes',
     draft,
     limit: 1,
     overrideAccess: draft,

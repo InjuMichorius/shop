@@ -25,8 +25,8 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   if (!Number.isInteger(sanitizedPageNumber)) notFound()
 
-  const posts = await payload.find({
-    collection: 'posts',
+  const recipes = await payload.find({
+    collection: 'recipes',
     depth: 1,
     limit: 12,
     page: sanitizedPageNumber,
@@ -38,24 +38,24 @@ export default async function Page({ params: paramsPromise }: Args) {
       <PageClient />
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
+          <h1>Recipes</h1>
         </div>
       </div>
 
       <div className="container mb-8">
         <PageRange
-          collection="posts"
-          currentPage={posts.page}
+          collection="recipes"
+          currentPage={recipes.page}
           limit={12}
-          totalDocs={posts.totalDocs}
+          totalDocs={recipes.totalDocs}
         />
       </div>
 
-      <CollectionArchive posts={posts.docs} />
+      <CollectionArchive recipes={recipes.docs} />
 
       <div className="container">
-        {posts?.page && posts?.totalPages > 1 && (
-          <Pagination page={posts.page} totalPages={posts.totalPages} />
+        {recipes?.page && recipes?.totalPages > 1 && (
+          <Pagination page={recipes.page} totalPages={recipes.totalPages} />
         )}
       </div>
     </div>
@@ -65,14 +65,14 @@ export default async function Page({ params: paramsPromise }: Args) {
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
   return {
-    title: `Payload Website Template Posts Page ${pageNumber || ''}`,
+    title: `Payload Website Template Recipes Page ${pageNumber || ''}`,
   }
 }
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const { totalDocs } = await payload.count({
-    collection: 'posts',
+    collection: 'recipes',
     overrideAccess: false,
   })
 

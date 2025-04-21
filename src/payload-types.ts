@@ -66,7 +66,7 @@ export interface Config {
   };
   collections: {
     pages: Page;
-    posts: Post;
+    recipes: Recipe;
     media: Media;
     categories: Category;
     users: User;
@@ -82,7 +82,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
-    posts: PostsSelect<false> | PostsSelect<true>;
+    recipes: RecipesSelect<false> | RecipesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -174,8 +174,8 @@ export interface Page {
                   value: string | Page;
                 } | null)
               | ({
-                  relationTo: 'posts';
-                  value: string | Post;
+                  relationTo: 'recipes';
+                  value: string | Recipe;
                 } | null);
             url?: string | null;
             label: string;
@@ -207,9 +207,9 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts".
+ * via the `definition` "recipes".
  */
-export interface Post {
+export interface Recipe {
   id: string;
   title: string;
   heroImage?: (string | null) | Media;
@@ -228,7 +228,7 @@ export interface Post {
     };
     [k: string]: unknown;
   };
-  relatedPosts?: (string | Post)[] | null;
+  relatedRecipes?: (string | Recipe)[] | null;
   categories?: (string | Category)[] | null;
   meta?: {
     title?: string | null;
@@ -414,8 +414,8 @@ export interface CallToActionBlock {
                 value: string | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: string | Post;
+                relationTo: 'recipes';
+                value: string | Recipe;
               } | null);
           url?: string | null;
           label: string;
@@ -464,8 +464,8 @@ export interface ContentBlock {
                 value: string | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: string | Post;
+                relationTo: 'recipes';
+                value: string | Recipe;
               } | null);
           url?: string | null;
           label: string;
@@ -512,13 +512,13 @@ export interface ArchiveBlock {
     [k: string]: unknown;
   } | null;
   populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
+  relationTo?: 'recipes' | null;
   categories?: (string | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
     | {
-        relationTo: 'posts';
-        value: string | Post;
+        relationTo: 'recipes';
+        value: string | Recipe;
       }[]
     | null;
   id?: string | null;
@@ -742,8 +742,8 @@ export interface Redirect {
           value: string | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: string | Post;
+          relationTo: 'recipes';
+          value: string | Recipe;
         } | null);
     url?: string | null;
   };
@@ -778,8 +778,8 @@ export interface Search {
   title?: string | null;
   priority?: number | null;
   doc: {
-    relationTo: 'posts';
-    value: string | Post;
+    relationTo: 'recipes';
+    value: string | Recipe;
   };
   slug?: string | null;
   meta?: {
@@ -901,8 +901,8 @@ export interface PayloadLockedDocument {
         value: string | Page;
       } | null)
     | ({
-        relationTo: 'posts';
-        value: string | Post;
+        relationTo: 'recipes';
+        value: string | Recipe;
       } | null)
     | ({
         relationTo: 'media';
@@ -1115,13 +1115,13 @@ export interface FormBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "posts_select".
+ * via the `definition` "recipes_select".
  */
-export interface PostsSelect<T extends boolean = true> {
+export interface RecipesSelect<T extends boolean = true> {
   title?: T;
   heroImage?: T;
   content?: T;
-  relatedPosts?: T;
+  relatedRecipes?: T;
   categories?: T;
   meta?:
     | T
@@ -1543,8 +1543,8 @@ export interface Header {
                 value: string | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: string | Post;
+                relationTo: 'recipes';
+                value: string | Recipe;
               } | null);
           url?: string | null;
           label: string;
@@ -1572,8 +1572,8 @@ export interface Footer {
                 value: string | Page;
               } | null)
             | ({
-                relationTo: 'posts';
-                value: string | Post;
+                relationTo: 'recipes';
+                value: string | Recipe;
               } | null);
           url?: string | null;
           label: string;
@@ -1644,8 +1644,8 @@ export interface TaskSchedulePublish {
           value: string | Page;
         } | null)
       | ({
-          relationTo: 'posts';
-          value: string | Post;
+          relationTo: 'recipes';
+          value: string | Recipe;
         } | null);
     global?: string | null;
     user?: (string | null) | User;
