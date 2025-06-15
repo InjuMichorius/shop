@@ -16,9 +16,10 @@ export default async function Page() {
 
   const recipes = await payload.find({
     collection: 'recipes',
-    depth: 1,
+    depth: 2,
     limit: 12,
-    overrideAccess: false,
+    // @ts-expect-error: Payload types don't support string[] for populate yet
+    populate: ['meta.image'],
     select: {
       title: true,
       slug: true,
@@ -35,7 +36,6 @@ export default async function Page() {
           <h1>Alle recepten</h1>
         </div>
       </div>
-
       <div className="container mb-8">
         <PageRange
           collection="recipes"
@@ -44,9 +44,9 @@ export default async function Page() {
           totalDocs={recipes.totalDocs}
         />
       </div>
-
+      eerste recipe:
+      <pre>{JSON.stringify(recipes.docs[0], null, 2)}</pre>
       <CollectionArchive recipes={recipes.docs} />
-
       <div className="container">
         {recipes.totalPages > 1 && recipes.page && (
           <Pagination page={recipes.page} totalPages={recipes.totalPages} />

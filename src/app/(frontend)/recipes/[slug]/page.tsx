@@ -61,7 +61,6 @@ export default async function Recipe({ params: paramsPromise }: Args) {
       <PayloadRedirects disableNotFound url={url} />
 
       {draft && <LivePreviewListener />}
-
       <RecipeHero recipe={recipe} />
 
       <div className="flex flex-col items-center gap-4 pt-8">
