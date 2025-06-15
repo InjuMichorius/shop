@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import type { File } from 'payload/types'
 
 import {
   BlocksFeature,
@@ -17,6 +18,7 @@ import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidateRecipe } from './hooks/revalidateRecipe'
+import { uploadToBlob } from '@/utilities/blobStorage'
 
 import {
   MetaDescriptionField,
@@ -26,6 +28,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/slug'
+import { getServerSideURL } from '@/utilities/getURL'
 
 export const Recipes: CollectionConfig<'recipes'> = {
   slug: 'recipes',
@@ -34,6 +37,29 @@ export const Recipes: CollectionConfig<'recipes'> = {
     delete: authenticated,
     read: authenticatedOrPublished,
     update: authenticated,
+  },
+  upload: {
+    staticURL: '/recipe-images',
+    adminThumbnail: 'thumbnail',
+    imageSizes: [
+      {
+        name: 'thumbnail',
+        width: 400,
+        height: 300,
+        position: 'centre',
+      },
+      {
+        name: 'card',
+        width: 768,
+        height: 1024,
+        position: 'centre',
+      },
+    ],
+    handlers: {
+      upload: async ({ file }: { file: File }): Promise<Partial<File>> => {
+        return uploadToBlob(file as unknown as globalThis.File)
+      },
+    },
   },
   // This config controls what's populated by default when a recipe is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
@@ -83,6 +109,40 @@ export const Recipes: CollectionConfig<'recipes'> = {
               name: 'heroImage',
               type: 'upload',
               relationTo: 'media',
+              hooks: {
+                beforeChange: [
+                  async ({ data, req, file }) => {
+                    if (!file) return data
+
+                    const formData = new FormData()
+                    formData.append('file', file)
+
+                    const uploadResponse = await fetch(
+                      `${getServerSideURL()}/api/upload?filename=${file.name}`,
+                      {
+                        method: 'POST',
+                        body: file,
+                      },
+                    )
+
+                    if (!uploadResponse.ok) {
+                      throw new Error('Failed to upload file')
+                    }
+
+                    const result = await uploadResponse.json()
+
+                    return {
+                      ...data,
+                      url: result.url,
+                      filename: file.name,
+                      mimeType: file.type,
+                      filesize: file.size,
+                      width: 0, // These would need to be determined from the image
+                      height: 0,
+                    }
+                  },
+                ],
+              },
             },
             {
               name: 'content',
@@ -221,8 +281,8 @@ export const Recipes: CollectionConfig<'recipes'> = {
   ],
   hooks: {
     afterChange: [revalidateRecipe],
-    afterRead: [populateAuthors],
     afterDelete: [revalidateDelete],
+    beforeChange: [populateAuthors],
   },
   versions: {
     drafts: {

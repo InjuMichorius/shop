@@ -29,6 +29,12 @@ export const Card: React.FC<{
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
 
+  // Hier checken of metaImage een object is of een string
+  // const imageUrl = typeof metaImage === 'string' ? metaImage : metaImage?.url
+  const imageUrl = doc?.meta?.image
+
+  console.log('imageUrl', imageUrl)
+
   return (
     <article
       className={cn(
@@ -38,8 +44,8 @@ export const Card: React.FC<{
       ref={card.ref}
     >
       <div className="relative w-full ">
-        {!metaImage && <div className="">No image</div>}
-        {metaImage && typeof metaImage !== 'string' && <Media resource={metaImage} size="33vw" />}
+        {!imageUrl && <div>No image</div>}
+        {imageUrl && typeof imageUrl === 'string' && <Media resource={imageUrl} size="33vw" />}
       </div>
       <div className="p-4">
         {showCategories && hasCategories && (
