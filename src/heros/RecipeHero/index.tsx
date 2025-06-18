@@ -1,5 +1,6 @@
 import { formatDateTime } from 'src/utilities/formatDateTime'
 import React from 'react'
+import Image from 'next/image'
 
 import type { Recipe } from '@/payload-types'
 
@@ -66,10 +67,12 @@ export const RecipeHero: React.FC<{
         {heroImage && typeof heroImage !== 'string' ? (
           <Media fill priority imgClassName="-z-10 object-cover" resource={heroImage} />
         ) : (
-          <img
+          <Image
             className="absolute inset-0 w-full h-full object-cover -z-10"
             src="/fallback.jpg"
             alt="Fallback recipe image"
+            fill
+            priority
           />
         )}
         <div className="absolute pointer-events-none left-0 bottom-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent" />

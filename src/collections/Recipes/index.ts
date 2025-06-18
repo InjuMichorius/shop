@@ -17,7 +17,6 @@ import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidateRecipe } from './hooks/revalidateRecipe'
-import { uploadToBlob } from '@/utilities/blobStorage'
 
 import {
   MetaDescriptionField,
@@ -27,7 +26,6 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/slug'
-import { getServerSideURL } from '@/utilities/getURL'
 
 export const Recipes: CollectionConfig<'recipes'> = {
   slug: 'recipes',
@@ -36,25 +34,6 @@ export const Recipes: CollectionConfig<'recipes'> = {
     delete: authenticated,
     read: authenticatedOrPublished,
     update: authenticated,
-  },
-  upload: {
-    staticDir: 'media',
-    imageSizes: [
-      {
-        name: 'thumbnail',
-        width: 400,
-        height: 300,
-        position: 'centre',
-      },
-      {
-        name: 'card',
-        width: 768,
-        height: 1024,
-        position: 'centre',
-      },
-    ],
-    adminThumbnail: 'thumbnail',
-    mimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
   },
   // This config controls what's populated by default when a recipe is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
