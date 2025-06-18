@@ -16,7 +16,7 @@ export async function uploadToBlob(file: File) {
 
 export function getBlobUrl(url: string) {
   // If the URL is already a Vercel Blob URL, return it as is
-  if (url.includes('.vercel.app')) {
+  if (url.includes('blob.vercel-storage.com') || url.includes('.vercel.app')) {
     return url
   }
 

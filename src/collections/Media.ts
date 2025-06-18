@@ -1,24 +1,34 @@
 import type { CollectionConfig, CollectionBeforeChangeHook } from 'payload'
 import { put } from '@vercel/blob'
-import mime from 'mime-types'
-import { Readable } from 'stream'
-import path from 'path'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
-import type { Media as MediaType } from '@/payload-types'
 
 const beforeChange: CollectionBeforeChangeHook = async (args) => {
   const { data } = args
-  const file = (args as any).file
+  const file = (args as { file?: File }).file
 
+  // Check for required environment variables
   if (!process.env.VERCEL_BLOB_READ_WRITE_TOKEN) {
+    console.error('VERCEL_BLOB_READ_WRITE_TOKEN is not set in environment variables')
     throw new Error('VERCEL_BLOB_READ_WRITE_TOKEN is not set')
   }
 
   if (file) {
     try {
+      console.log('Starting file upload to Vercel Blob:', {
+        filename: file.name,
+        size: file.size,
+        type: file.type,
+        hasToken: !!process.env.VERCEL_BLOB_READ_WRITE_TOKEN,
+      })
+
       const blob = await put(file.name, file as unknown as globalThis.File, {
         access: 'public',
         contentType: file.type,
+      })
+
+      console.log('File uploaded successfully to Vercel Blob:', {
+        url: blob.url,
+        filename: file.name,
       })
 
       return {
@@ -31,7 +41,13 @@ const beforeChange: CollectionBeforeChangeHook = async (args) => {
         height: 0,
       }
     } catch (error) {
-      console.error('Error uploading to Vercel Blob:', error)
+      console.error('Error uploading to Vercel Blob:', {
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        filename: file.name,
+        size: file.size,
+        type: file.type,
+      })
       throw error
     }
   }
@@ -48,7 +64,6 @@ export const Media: CollectionConfig = {
     useAsTitle: 'filename',
   },
   upload: {
-    staticDir: 'media',
     imageSizes: [
       {
         name: 'thumbnail',
@@ -68,36 +83,6 @@ export const Media: CollectionConfig = {
   },
   hooks: {
     beforeChange: [beforeChange],
-    afterChange: [
-      async ({ doc, req }) => {
-        const filename = doc?.filename
-        if (!filename) return
-
-        const filePath = path.resolve(process.cwd(), 'media', filename)
-        const fs = await import('fs/promises')
-
-        try {
-          const buffer = await fs.readFile(filePath)
-          const stream = Readable.from(buffer)
-
-          const blob = await put(filename, stream, {
-            access: 'public',
-            token: process.env.VERCEL_BLOB_READ_WRITE_TOKEN!,
-            contentType: mime.lookup(filename) || 'application/octet-stream',
-          })
-
-          await req.payload.update({
-            collection: 'media',
-            id: doc.id,
-            data: {
-              url: blob.url,
-            },
-          })
-        } catch (err) {
-          console.error('Upload to Vercel Blob failed:', err)
-        }
-      },
-    ],
   },
   fields: [
     {
