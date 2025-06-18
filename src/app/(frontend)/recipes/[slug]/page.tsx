@@ -55,15 +55,12 @@ export default async function Recipe({ params: paramsPromise }: Args) {
 
   return (
     <article className="pt-16 pb-16">
+      1
       <PageClient />
-
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
-
       {draft && <LivePreviewListener />}
-
       <RecipeHero recipe={recipe} />
-
       <div className="flex flex-col items-center gap-4 pt-8">
         <div className="container">
           <RichText className="max-w-[48rem] mx-auto" data={recipe.content} enableGutter={false} />
