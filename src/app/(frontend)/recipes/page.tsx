@@ -44,8 +44,6 @@ export default async function Page() {
           totalDocs={recipes.totalDocs}
         />
       </div>
-      eerste recipe:
-      <pre>{JSON.stringify(recipes.docs[0], null, 2)}</pre>
       <CollectionArchive recipes={recipes.docs} />
       <div className="container">
         {recipes.totalPages > 1 && recipes.page && (

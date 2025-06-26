@@ -29,12 +29,6 @@ export const Card: React.FC<{
   const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
   const href = `/${relationTo}/${slug}`
 
-  // Hier checken of metaImage een object is of een string
-  // const imageUrl = typeof metaImage === 'string' ? metaImage : metaImage?.url
-  const imageUrl = doc?.meta?.image
-
-  console.log('imageUrl', imageUrl)
-
   return (
     <article
       className={cn(
