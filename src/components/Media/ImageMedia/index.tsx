@@ -9,7 +9,6 @@ import React from 'react'
 import type { Props as MediaProps } from '../types'
 
 import { cssVariables } from '@/cssVariables'
-import { getBlobUrl } from '@/utilities/blobStorage'
 
 const { breakpoints } = cssVariables
 
@@ -42,7 +41,7 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
     alt = altFromResource || ''
 
     const cacheTag = resource.updatedAt
-    src = getBlobUrl(`${url}?${cacheTag}`)
+    src = `${url}?${cacheTag}`
   }
 
   const loading = loadingFromProps || (!priority ? 'lazy' : undefined)

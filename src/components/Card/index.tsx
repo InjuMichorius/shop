@@ -22,7 +22,7 @@ export const Card: React.FC<{
   const { className, doc, relationTo, showCategories, title: titleFromProps } = props
 
   const { slug, categories, meta, title } = doc || {}
-  const { description } = meta || {}
+  const { description, image: metaImage } = meta || {}
 
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
@@ -43,9 +43,13 @@ export const Card: React.FC<{
       )}
       ref={card.ref}
     >
-      <div className="relative w-full ">
-        {!imageUrl && <div>No image</div>}
-        {imageUrl && typeof imageUrl === 'string' && <Media resource={imageUrl} size="33vw" />}
+      <div className="relative w-full aspect-[4/3] bg-muted">
+        {!metaImage && (
+          <div className="w-full h-full flex items-center justify-center">No image</div>
+        )}
+        {metaImage && typeof metaImage === 'object' && (
+          <Media className="w-full h-full" resource={metaImage} />
+        )}
       </div>
       <div className="p-4">
         {showCategories && hasCategories && (
