@@ -23,5 +23,13 @@ export const RenderHero: React.FC<Page['hero']> = (props) => {
 
   if (!HeroToRender) return null
 
-  return <HeroToRender {...props} />
+  if (type === 'category') {
+    // Type assertion needed due to complex union types between Page hero and CategoryHero props
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return <CategoryHero {...(props as any)} />
+  }
+
+  // Type assertion needed due to complex union types between Page hero and hero component props
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return <HeroToRender {...(props as any)} />
 }

@@ -1,3 +1,27 @@
+@font-face {
+  font-family: 'Agrandir';
+  src: url('/fonts/Agrandir-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Agrandir';
+  src: url('/fonts/Agrandir-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Agrandir';
+  src: url('/fonts/Agrandir-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,6 +38,7 @@
   }
 
   :root {
+    --font-agrandir: 'Agrandir', sans-serif;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
