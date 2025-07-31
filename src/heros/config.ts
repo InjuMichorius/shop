@@ -16,12 +16,16 @@ export const hero: Field = {
     {
       name: 'type',
       type: 'select',
-      defaultValue: 'lowImpact',
+      defaultValue: 'None',
       label: 'Type',
       options: [
         {
           label: 'None',
           value: 'none',
+        },
+        {
+          label: 'Category Hero',
+          value: 'category',
         },
         {
           label: 'High Impact',
