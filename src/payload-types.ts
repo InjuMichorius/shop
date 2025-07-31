@@ -187,6 +187,10 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
+    /**
+     * Select categories to display in the Category Hero
+     */
+    categories?: (string | Category)[] | null;
     media?: (string | null) | Media;
   };
   layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
@@ -311,6 +315,10 @@ export interface Media {
 export interface Category {
   id: string;
   title: string;
+  /**
+   * Upload an image for this category
+   */
+  image?: (string | null) | Media;
   slug?: string | null;
   slugLock?: boolean | null;
   parent?: (string | null) | Category;
@@ -964,6 +972,7 @@ export interface PagesSelect<T extends boolean = true> {
                   };
               id?: T;
             };
+        categories?: T;
         media?: T;
       };
   layout?:
@@ -1153,6 +1162,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
+  image?: T;
   slug?: T;
   slugLock?: T;
   parent?: T;

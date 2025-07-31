@@ -63,6 +63,16 @@ export const hero: Field = {
       },
     }),
     {
+      name: 'categories',
+      type: 'relationship',
+      relationTo: 'categories',
+      hasMany: true,
+      admin: {
+        condition: (_, { type }) => type === 'category',
+        description: 'Select categories to display in the Category Hero',
+      },
+    },
+    {
       name: 'media',
       type: 'upload',
       admin: {
