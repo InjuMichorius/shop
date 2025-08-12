@@ -1,5 +1,6 @@
 import tailwindcssAnimate from 'tailwindcss-animate'
 import typography from '@tailwindcss/typography'
+import lineClamp from '@tailwindcss/line-clamp'
 
 /** @type {import('tailwindcss').Config} */
 const config = {
@@ -10,7 +11,7 @@ const config = {
     './src/**/*.{ts,tsx}',
   ],
   darkMode: ['selector', '[data-theme="dark"]'],
-  plugins: [tailwindcssAnimate, typography],
+  plugins: [tailwindcssAnimate, typography, lineClamp],
   prefix: '',
   safelist: [
     'lg:col-span-4',
@@ -94,7 +95,7 @@ const config = {
         warning: 'hsl(var(--warning))',
         // Custom colors
         beige: '#FFF9E1',
-        green: '#000000',
+        green: '#5F6C37',
       },
       fontFamily: {
         mono: ['var(--font-geist-mono)'],

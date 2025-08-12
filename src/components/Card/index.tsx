@@ -2,11 +2,11 @@
 import { cn } from '@/utilities/ui'
 import useClickableCard from '@/utilities/useClickableCard'
 import Link from 'next/link'
-import React, { Fragment } from 'react'
+import React from 'react'
 
 import type { Recipe } from '@/payload-types'
 
-import { Media } from '@/components/Media'
+import { ImageMedia } from '@/components/Media/ImageMedia'
 
 export type CardRecipeData = Pick<Recipe, 'slug' | 'categories' | 'meta' | 'title'>
 
@@ -31,58 +31,61 @@ export const Card: React.FC<{
 
   return (
     <article
-      className={cn(
-        'border border-border rounded-lg overflow-hidden bg-card hover:cursor-pointer',
-        className,
-      )}
+      tabIndex={0}
+      className={cn('overflow-hidden hover:cursor-pointer group relative', className)}
       ref={card.ref}
     >
-      <div className="relative w-full aspect-[4/3] bg-muted">
-        {!metaImage && (
-          <div className="w-full h-full flex items-center justify-center">No image</div>
-        )}
+      <div className="relative overflow-hidden rounded-2xl">
+        {!metaImage && <p>No image</p>}
         {metaImage && typeof metaImage === 'object' && (
-          <Media className="w-full h-full" resource={metaImage} />
+          <ImageMedia
+            resource={metaImage}
+            imgClassName="w-full h-full object-cover aspect-[4/3] transition-transform duration-500 group-hover:scale-105"
+          />
         )}
-      </div>
-      <div className="p-4">
+        <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/20" />
+
         {showCategories && hasCategories && (
-          <div className="uppercase text-sm mb-4">
-            {showCategories && hasCategories && (
-              <div>
-                {categories?.map((category, index) => {
-                  if (typeof category === 'object') {
-                    const { title: titleFromCategory } = category
+          <ul className="absolute bottom-2 left-2 text-sm flex gap-2 z-10">
+            {categories?.map((category, index) => {
+              if (typeof category === 'object') {
+                const title = category.title || 'Untitled category'
 
-                    const categoryTitle = titleFromCategory || 'Untitled category'
-
-                    const isLast = index === categories.length - 1
-
-                    return (
-                      <Fragment key={index}>
-                        {categoryTitle}
-                        {!isLast && <Fragment>, &nbsp;</Fragment>}
-                      </Fragment>
-                    )
-                  }
-
-                  return null
-                })}
-              </div>
-            )}
-          </div>
+                return (
+                  <li
+                    key={index}
+                    style={{ '--delay': `${index * 80}ms` } as React.CSSProperties}
+                    className={cn(
+                      'bg-white rounded-full px-2 py-1 transform transition-all duration-300 ease-out',
+                      'xl:translate-y-4 xl:opacity-0 xl:[transition-delay:0ms]',
+                      'xl:group-hover:translate-y-0 xl:group-hover:opacity-100 xl:group-hover:[transition-delay:var(--delay)]',
+                      'xl:group-focus-visible:translate-y-0 xl:group-focus-visible:opacity-100 xl:group-focus-visible:[transition-delay:var(--delay)]',
+                    )}
+                  >
+                    {title}
+                  </li>
+                )
+              }
+              return null
+            })}
+          </ul>
         )}
-        {titleToUse && (
-          <div className="prose">
-            <h3>
-              <Link className="not-prose" href={href} ref={link.ref}>
-                {titleToUse}
-              </Link>
-            </h3>
-          </div>
-        )}
-        {description && <div className="mt-2">{description && <p>{sanitizedDescription}</p>}</div>}
       </div>
+      <div>
+        {titleToUse && <h3 className="line-clamp-2 text-xl/6 font-bold mt-3">{titleToUse}</h3>}
+        {description && (
+          <div className="mt-2">
+            <p className="line-clamp-3">{sanitizedDescription}</p>
+          </div>
+        )}
+      </div>
+
+      <Link
+        href={href}
+        className="absolute inset-0 z-10"
+        aria-label={titleToUse || 'Card link'}
+        ref={link.ref}
+      />
     </article>
   )
 }
