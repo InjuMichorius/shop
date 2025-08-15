@@ -26,7 +26,7 @@ export const Card: React.FC<{
 
   const hasCategories = categories && Array.isArray(categories) && categories.length > 0
   const titleToUse = titleFromProps || title
-  const sanitizedDescription = description?.replace(/\s/g, ' ') // replace non-breaking space with white space
+  const sanitizedDescription = description?.replace(/\s/g, ' ')
   const href = `/${relationTo}/${slug}`
 
   return (
@@ -71,7 +71,7 @@ export const Card: React.FC<{
           </ul>
         )}
       </div>
-      <div>
+      <div className="px-2">
         {titleToUse && <h3 className="line-clamp-2 text-xl/6 font-bold mt-3">{titleToUse}</h3>}
         {description && (
           <div className="mt-2">
